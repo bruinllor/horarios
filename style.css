@@ -100,11 +100,12 @@ main {
 
 .calendario-semana {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
 .dia {
     min-height: 500px;
+    min-width: 0;
     border-right: 1px solid var(--borde);
 }
 
@@ -140,7 +141,7 @@ main {
 
 .calendario-mes {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
 .cabecera-mes {
@@ -153,6 +154,8 @@ main {
 
 .dia-mes {
     min-height: 120px;
+    min-width: 0;
+    overflow: hidden;
     padding: 8px;
     border-right: 1px solid var(--borde);
     border-bottom: 1px solid var(--borde);
@@ -171,6 +174,9 @@ main {
     margin-bottom: 3px;
     font-size: 12px;
     cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .modal {
