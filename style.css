@@ -1,25 +1,21 @@
 * {
     box-sizing: border-box;
 }
-
 body {
     margin: 0;
     font-family: Arial, sans-serif;
     background: #f4f6f8;
     color: #1f2937;
 }
-
 header {
     background: white;
     padding: 20px;
     border-bottom: 1px solid #ddd;
     text-align: center;
 }
-
 h1 {
     margin: 0 0 15px;
 }
-
 .selector,
 .vistas {
     display: flex;
@@ -27,7 +23,6 @@ h1 {
     gap: 8px;
     margin-top: 10px;
 }
-
 button {
     border: none;
     border-radius: 8px;
@@ -36,34 +31,28 @@ button {
     background: #e5e7eb;
     font-size: 14px;
 }
-
 button:hover {
     filter: brightness(0.95);
 }
-
 button.active {
     background: #111827;
     color: white;
 }
-
 main {
     max-width: 1200px;
     margin: 25px auto;
     padding: 0 15px;
 }
-
 .barra-superior {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 20px;
 }
-
 .barra-superior h2 {
     min-width: 220px;
     text-align: center;
 }
-
 .boton-añadir {
     display: block;
     margin: 20px auto;
@@ -71,28 +60,23 @@ main {
     color: white;
     font-weight: bold;
 }
-
 #calendario {
     background: white;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
-
 .calendario-semana {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
 }
-
 .dia {
     min-height: 500px;
     border-right: 1px solid #e5e7eb;
 }
-
 .dia:last-child {
     border-right: none;
 }
-
 .nombre-dia {
     background: #f9fafb;
     padding: 15px 5px;
@@ -100,11 +84,9 @@ main {
     font-weight: bold;
     border-bottom: 1px solid #e5e7eb;
 }
-
 .eventos {
     padding: 10px;
 }
-
 .evento {
     color: white;
     border-radius: 8px;
@@ -113,17 +95,14 @@ main {
     cursor: pointer;
     font-size: 14px;
 }
-
 .evento strong {
     display: block;
     margin-bottom: 4px;
 }
-
 .calendario-mes {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
 }
-
 .cabecera-mes {
     background: #f9fafb;
     padding: 12px;
@@ -131,19 +110,16 @@ main {
     font-weight: bold;
     border-bottom: 1px solid #ddd;
 }
-
 .dia-mes {
     min-height: 120px;
     padding: 8px;
     border-right: 1px solid #e5e7eb;
     border-bottom: 1px solid #e5e7eb;
 }
-
 .numero-dia {
     font-weight: bold;
     margin-bottom: 6px;
 }
-
 .evento-mes {
     color: white;
     border-radius: 5px;
@@ -152,7 +128,6 @@ main {
     font-size: 12px;
     cursor: pointer;
 }
-
 .modal {
     position: fixed;
     inset: 0;
@@ -162,11 +137,9 @@ main {
     justify-content: center;
     padding: 20px;
 }
-
 .oculto {
     display: none;
 }
-
 .modal-contenido {
     background: white;
     width: 100%;
@@ -174,18 +147,15 @@ main {
     padding: 25px;
     border-radius: 15px;
 }
-
 .modal-contenido h2 {
     margin-top: 0;
 }
-
 .modal-contenido label {
     display: block;
     margin-top: 15px;
     margin-bottom: 5px;
     font-weight: bold;
 }
-
 .modal-contenido input,
 .modal-contenido select {
     width: 100%;
@@ -194,29 +164,24 @@ main {
     border-radius: 7px;
     font-size: 15px;
 }
-
 .acciones-modal {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
     margin-top: 25px;
 }
-
 .guardar {
     background: #111827;
     color: white;
 }
-
 @media (max-width: 700px) {
     .calendario-semana {
         overflow-x: auto;
         grid-template-columns: repeat(7, minmax(140px, 1fr));
     }
-
     .calendario-mes {
         font-size: 12px;
     }
-
     .dia-mes {
         min-height: 90px;
         padding: 4px;
