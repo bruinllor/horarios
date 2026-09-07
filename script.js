@@ -479,7 +479,7 @@ document.getElementById("vistaMes").onclick = () => {
     mostrarCalendario();
 };
 
-document.getElementById("añadirEvento").onclick =
+document.getElementById("btnAnadirEvento").onclick =
     abrirModal;
 
 document.getElementById("cancelarEvento").onclick =
