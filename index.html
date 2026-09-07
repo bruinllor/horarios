@@ -7,7 +7,7 @@
 
     <title>Mis horarios</title>
 
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 
 <body>
@@ -18,15 +18,15 @@
 
         <div class="selector">
 
-            <button id="horarioA" style="display: none;">
+            <button id="horarioA">
                 Bruno
             </button>
 
-            <button id="horarioB" style="display: none;">
+            <button id="horarioB">
                 Mauro
             </button>
 
-            <button id="horarioAmbos" style="display: none;">
+            <button id="horarioAmbos">
                 Ambos
             </button>
 
@@ -71,23 +71,18 @@
         </button>
 
 
-        <!-- INSTRUCCIÓN PARA ARRASTRAR -->
-
         <p class="instruccion-arrastre">
             Arrastra para copiar o mover
         </p>
 
 
-        <!-- CALENDARIO -->
-
         <div id="calendario"></div>
-
 
     </main>
 
 
     <!-- =========================
-         MODAL PARA AÑADIR / EDITAR
+         MODAL AÑADIR / EDITAR
          ========================= -->
 
     <div id="modal" class="modal oculto">
@@ -191,7 +186,7 @@
 
 
     <!-- =========================
-         MODAL COPIAR / MOVER
+         MODAL MOVER / COPIAR
          ========================= -->
 
     <div
@@ -207,7 +202,6 @@
             <p>
                 Has arrastrado este evento a otro día.
             </p>
-
 
             <div class="botones-arrastre">
 
@@ -235,8 +229,6 @@
 
     </div>
 
-
-    <!-- JAVASCRIPT -->
 
     <script src="script.js"></script>
 
