@@ -323,4 +323,19 @@ main {
     .acciones-modal button {
         flex: 1;
     }
+    .checkbox-todo-dia {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.checkbox-todo-dia input {
+    width: auto;
+    margin: 0;
+}
+
+.checkbox-todo-dia label {
+    margin: 0;
+}
 }
