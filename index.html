@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,8 +14,8 @@
         <h1>Mis horarios</h1>
 
         <div class="selector">
-            <button id="horarioA" class="active">Horario A</button>
-            <button id="horarioB">Horario B</button>
+            <button id="horarioA" class="active">Bruno</button>
+            <button id="horarioB">Mauro</button>
         </div>
 
         <div class="vistas">
@@ -39,12 +40,17 @@
 
     <div id="modal" class="modal oculto">
         <div class="modal-contenido">
+
             <h2 id="tituloModal">Añadir evento</h2>
 
-            <label>Nombre</label>
-            <input type="text" id="nombreEvento" placeholder="Ej. Matemáticas">
+            <label for="nombreEvento">Nombre</label>
+            <input
+                type="text"
+                id="nombreEvento"
+                placeholder="Ej. Matemáticas"
+            >
 
-            <label>Día</label>
+            <label for="diaEvento">Día</label>
             <select id="diaEvento">
                 <option value="1">Lunes</option>
                 <option value="2">Martes</option>
@@ -55,19 +61,47 @@
                 <option value="0">Domingo</option>
             </select>
 
-            <label>Hora de inicio</label>
-            <input type="time" id="horaInicio">
+            <label for="horaInicio">Hora de inicio</label>
+            <input
+                type="time"
+                id="horaInicio"
+            >
 
-            <label>Hora de finalización</label>
-            <input type="time" id="horaFin">
+            <label for="horaFin">Hora de finalización</label>
+            <input
+                type="time"
+                id="horaFin"
+            >
 
-            <label>Color</label>
-            <input type="color" id="colorEvento" value="#6366f1">
+            <label for="colorEvento">Color</label>
+            <input
+                type="color"
+                id="colorEvento"
+                value="#6366f1"
+            >
 
             <div class="acciones-modal">
-                <button id="cancelarEvento">Cancelar</button>
-                <button id="guardarEvento" class="guardar">Guardar</button>
+
+                <button
+                    id="botonEliminar"
+                    style="display: none; background: #dc2626; color: white;"
+                >
+                    Eliminar
+                </button>
+
+                <button id="cancelarEvento">
+                    Cancelar
+                </button>
+
+                <button
+                    id="guardarEvento"
+                    class="guardar"
+                >
+                    Guardar
+                </button>
+
             </div>
+
         </div>
     </div>
 
@@ -75,3 +109,4 @@
 
 </body>
 </html>
+```
