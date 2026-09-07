@@ -35,7 +35,8 @@
         <button id="btnAnadirEvento" class="boton-añadir">
             + Añadir evento
         </button>
-
+<p class="instruccion-arrastre">Arrastra para copiar o mover</p>
+<div id="calendario"></div>
         <div id="calendario"></div>
 
     </main>
@@ -118,6 +119,38 @@
     </div>
 
     <script src="script.js"></script>
+<div id="modalArrastre" class="modal-arrastre oculto">
+    <div class="caja-arrastre">
 
+        <h3>¿Qué quieres hacer?</h3>
+
+        <p>
+            Has arrastrado este evento a otro día.
+        </p>
+
+        <div class="botones-arrastre">
+
+            <button
+                id="botonMover"
+                class="boton-mover">
+                Mover
+            </button>
+
+            <button
+                id="botonCopiar"
+                class="boton-copiar">
+                Copiar
+            </button>
+
+            <button
+                id="botonCancelarArrastre"
+                class="boton-cancelar-arrastre">
+                Cancelar
+            </button>
+
+        </div>
+
+    </div>
+</div>
 </body>
 </html>
