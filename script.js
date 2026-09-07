@@ -160,8 +160,7 @@ function mostrarMes() {
         elemento.appendChild(numero);
 
         const fecha = new Date(año, mes, dia);
-
-        let diaSemana = fecha.getDay();
+        const diaSemana = fecha.getDay();
 
         const eventosDia = horarios[horarioActual]
             .filter(evento => Number(evento.dia) === diaSemana);
@@ -198,9 +197,13 @@ function abrirModal() {
         "Añadir evento";
 
     document.getElementById("nombreEvento").value = "";
+    document.getElementById("diaEvento").value = "1";
     document.getElementById("horaInicio").value = "";
     document.getElementById("horaFin").value = "";
     document.getElementById("colorEvento").value = "#6366f1";
+
+    document.getElementById("botonEliminar").style.display =
+        "none";
 
     modal.classList.remove("oculto");
 }
@@ -230,6 +233,9 @@ function editarEvento(evento) {
 
     document.getElementById("colorEvento").value =
         evento.color;
+
+    document.getElementById("botonEliminar").style.display =
+        "block";
 
     modal.classList.remove("oculto");
 }
@@ -276,6 +282,25 @@ function guardarEvento() {
             color
         });
     }
+
+    guardarDatos();
+    cerrarModal();
+    mostrarCalendario();
+}
+
+function eliminarEvento() {
+    if (!eventoEditando) return;
+
+    const confirmar = confirm(
+        `¿Quieres eliminar "${eventoEditando.nombre}"?`
+    );
+
+    if (!confirmar) return;
+
+    horarios[horarioActual] =
+        horarios[horarioActual].filter(
+            evento => evento.id !== eventoEditando.id
+        );
 
     guardarDatos();
     cerrarModal();
@@ -338,6 +363,9 @@ document.getElementById("cancelarEvento").onclick =
 
 document.getElementById("guardarEvento").onclick =
     guardarEvento;
+
+document.getElementById("botonEliminar").onclick =
+    eliminarEvento;
 
 document.getElementById("mesAnterior").onclick = () => {
     fechaActual.setMonth(fechaActual.getMonth() - 1);
