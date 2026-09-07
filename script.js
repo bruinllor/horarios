@@ -51,20 +51,6 @@ function cargarDatos() {
             if (!horarios.A) horarios.A = [];
             if (!horarios.B) horarios.B = [];
 
-            horarios.A.forEach((evento, indice) => {
-                if (!evento.id) {
-                    evento.id = Date.now() + indice;
-                }
-            });
-
-            horarios.B.forEach((evento, indice) => {
-                if (!evento.id) {
-                    evento.id = Date.now() + indice + 1000;
-                }
-            });
-
-            guardarDatos();
-
         } catch (error) {
             console.error("Error al cargar los horarios:", error);
 
@@ -92,25 +78,47 @@ function mostrarSemana() {
     const contenedor = document.createElement("div");
     contenedor.className = "calendario-semana";
 
+    const hoy = new Date();
+    const diaActual = hoy.getDay();
+
+    let lunes = new Date(hoy);
+
+    if (diaActual === 0) {
+        lunes.setDate(hoy.getDate() - 6);
+    } else {
+        lunes.setDate(hoy.getDate() - (diaActual - 1));
+    }
+
     for (let dia = 1; dia <= 7; dia++) {
+
         const columna = document.createElement("div");
         columna.className = "dia";
 
+        const fechaDia = new Date(lunes);
+        fechaDia.setDate(lunes.getDate() + dia - 1);
+
+        const fechaTexto =
+            fechaDia.toISOString().split("T")[0];
+
         const nombre = document.createElement("div");
         nombre.className = "nombre-dia";
-        nombre.textContent = nombresDias[dia];
+
+        nombre.textContent =
+            `${nombresDias[fechaDia.getDay()]} ${fechaDia.getDate()}/${fechaDia.getMonth() + 1}`;
 
         const eventos = document.createElement("div");
         eventos.className = "eventos";
 
-        const eventosDia = horarios[horarioActual]
-            .filter(evento => Number(evento.dia) === dia);
+        const eventosDia =
+            horarios[horarioActual]
+                .filter(evento => evento.fecha === fechaTexto);
 
         eventosDia.sort((a, b) =>
             a.inicio.localeCompare(b.inicio)
         );
 
         eventosDia.forEach(evento => {
+
             const elemento = document.createElement("div");
 
             elemento.className = "evento";
@@ -121,7 +129,8 @@ function mostrarSemana() {
                 <span>${evento.inicio} - ${evento.fin}</span>
             `;
 
-            elemento.onclick = () => editarEvento(evento);
+            elemento.onclick = () =>
+                editarEvento(evento);
 
             eventos.appendChild(elemento);
         });
@@ -158,6 +167,7 @@ function mostrarMes() {
     ];
 
     diasSemana.forEach(dia => {
+
         const elemento = document.createElement("div");
 
         elemento.className = "cabecera-mes";
@@ -166,7 +176,8 @@ function mostrarMes() {
         contenedor.appendChild(elemento);
     });
 
-    let primerDia = new Date(año, mes, 1).getDay();
+    let primerDia =
+        new Date(año, mes, 1).getDay();
 
     if (primerDia === 0) {
         primerDia = 7;
@@ -176,7 +187,9 @@ function mostrarMes() {
         new Date(año, mes + 1, 0).getDate();
 
     for (let i = 1; i < primerDia; i++) {
-        const vacio = document.createElement("div");
+
+        const vacio =
+            document.createElement("div");
 
         vacio.className = "dia-mes";
 
@@ -184,27 +197,33 @@ function mostrarMes() {
     }
 
     for (let dia = 1; dia <= diasMes; dia++) {
-        const elemento = document.createElement("div");
+
+        const elemento =
+            document.createElement("div");
 
         elemento.className = "dia-mes";
 
-        const numero = document.createElement("div");
+        const numero =
+            document.createElement("div");
 
         numero.className = "numero-dia";
         numero.textContent = dia;
 
         elemento.appendChild(numero);
 
-        const fecha =
-            new Date(año, mes, dia);
+        const mesTexto =
+            String(mes + 1).padStart(2, "0");
 
-        const diaSemana =
-            fecha.getDay();
+        const diaTexto =
+            String(dia).padStart(2, "0");
+
+        const fechaTexto =
+            `${año}-${mesTexto}-${diaTexto}`;
 
         const eventosDia =
             horarios[horarioActual]
                 .filter(evento =>
-                    Number(evento.dia) === diaSemana
+                    evento.fecha === fechaTexto
                 );
 
         eventosDia.sort((a, b) =>
@@ -212,6 +231,7 @@ function mostrarMes() {
         );
 
         eventosDia.forEach(evento => {
+
             const eventoElemento =
                 document.createElement("div");
 
@@ -237,16 +257,22 @@ function mostrarMes() {
 }
 
 function abrirModal() {
+
     eventoEditando = null;
 
     document.getElementById("tituloModal").textContent =
         "Añadir evento";
 
     document.getElementById("nombreEvento").value = "";
-    document.getElementById("diaEvento").value = "1";
+
+    document.getElementById("fechaEvento").value = "";
+
     document.getElementById("horaInicio").value = "";
+
     document.getElementById("horaFin").value = "";
-    document.getElementById("colorEvento").value = "#6366f1";
+
+    document.getElementById("colorEvento").value =
+        "#6366f1";
 
     document.getElementById("botonEliminar").style.display =
         "none";
@@ -255,11 +281,14 @@ function abrirModal() {
 }
 
 function cerrarModal() {
+
     modal.classList.add("oculto");
+
     eventoEditando = null;
 }
 
 function editarEvento(evento) {
+
     eventoEditando = evento;
 
     document.getElementById("tituloModal").textContent =
@@ -268,8 +297,8 @@ function editarEvento(evento) {
     document.getElementById("nombreEvento").value =
         evento.nombre;
 
-    document.getElementById("diaEvento").value =
-        evento.dia;
+    document.getElementById("fechaEvento").value =
+        evento.fecha || "";
 
     document.getElementById("horaInicio").value =
         evento.inicio;
@@ -287,37 +316,47 @@ function editarEvento(evento) {
 }
 
 function guardarEvento() {
-    const nombre =
-        document.getElementById("nombreEvento").value.trim();
 
-    const dia =
-        document.getElementById("diaEvento").value;
+    const nombre =
+        document.getElementById("nombreEvento")
+            .value.trim();
+
+    const fecha =
+        document.getElementById("fechaEvento")
+            .value;
 
     const inicio =
-        document.getElementById("horaInicio").value;
+        document.getElementById("horaInicio")
+            .value;
 
     const fin =
-        document.getElementById("horaFin").value;
+        document.getElementById("horaFin")
+            .value;
 
     const color =
-        document.getElementById("colorEvento").value;
+        document.getElementById("colorEvento")
+            .value;
 
-    if (!nombre || !inicio || !fin) {
+    if (!nombre || !fecha || !inicio || !fin) {
+
         alert("Completa todos los campos.");
+
         return;
     }
 
     if (inicio >= fin) {
+
         alert(
             "La hora de finalización debe ser posterior."
         );
+
         return;
     }
 
     if (eventoEditando) {
 
         eventoEditando.nombre = nombre;
-        eventoEditando.dia = dia;
+        eventoEditando.fecha = fecha;
         eventoEditando.inicio = inicio;
         eventoEditando.fin = fin;
         eventoEditando.color = color;
@@ -325,12 +364,19 @@ function guardarEvento() {
     } else {
 
         horarios[horarioActual].push({
+
             id: Date.now(),
+
             nombre: nombre,
-            dia: dia,
+
+            fecha: fecha,
+
             inicio: inicio,
+
             fin: fin,
+
             color: color
+
         });
     }
 
@@ -342,16 +388,14 @@ function guardarEvento() {
 }
 
 function eliminarEvento() {
+
     if (!eventoEditando) {
         return;
     }
 
-    const nombreEvento =
-        eventoEditando.nombre;
-
     const confirmar =
         confirm(
-            `¿Quieres eliminar "${nombreEvento}"?`
+            `¿Quieres eliminar "${eventoEditando.nombre}"?`
         );
 
     if (!confirmar) {
@@ -365,7 +409,9 @@ function eliminarEvento() {
         eventos.indexOf(eventoEditando);
 
     if (indice !== -1) {
+
         eventos.splice(indice, 1);
+
     } else {
 
         horarios[horarioActual] =
