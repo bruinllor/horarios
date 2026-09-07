@@ -144,8 +144,20 @@ function mostrarSemana() {
             elemento.className = "evento";
             elemento.style.background = evento.color;
 
+            const creador =
+                evento.horarioOrigen === "A"
+                    ? "Bruno"
+                    : "Mauro";
+
             elemento.innerHTML = `
                 <strong>${evento.nombre}</strong>
+
+                ${
+                    horarioActual === "AMBOS"
+                        ? `<small>${creador}</small>`
+                        : ""
+                }
+
                 <span>${evento.inicio} - ${evento.fin}</span>
             `;
 
@@ -261,8 +273,20 @@ function mostrarMes() {
             eventoElemento.style.background =
                 evento.color;
 
-            eventoElemento.textContent =
-                `${evento.inicio} ${evento.nombre}`;
+            const creador =
+                evento.horarioOrigen === "A"
+                    ? "Bruno"
+                    : "Mauro";
+
+            eventoElemento.innerHTML = `
+                ${evento.inicio} ${evento.nombre}
+
+                ${
+                    horarioActual === "AMBOS"
+                        ? `<small> (${creador})</small>`
+                        : ""
+                }
+            `;
 
             eventoElemento.onclick = () =>
                 editarEvento(evento);
