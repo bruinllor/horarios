@@ -2,6 +2,8 @@ let horarioActual = "A";
 let vistaActual = "semana";
 let fechaActual = new Date();
 let eventoEditando = null;
+let eventoArrastrado = null;
+let arrastreRealizado = false;
 
 let horarios = {
     A: [],
@@ -55,9 +57,7 @@ function cargarDatos() {
     const datos = localStorage.getItem("horarios_todos");
 
     if (datos) {
-
         try {
-
             horarios = JSON.parse(datos);
 
             if (!horarios.A) {
@@ -107,6 +107,137 @@ function obtenerEventos() {
     }
 
     return horarios[horarioActual];
+}
+
+/* =========================
+   DRAG & DROP
+   ========================= */
+
+function iniciarArrastre(evento, elemento) {
+
+    let origen = evento.horarioOrigen || horarioActual;
+
+    if (origen === "AMBOS") {
+        return;
+    }
+
+    eventoArrastrado = {
+        id: evento.id,
+        origen: origen
+    };
+
+    arrastreRealizado = true;
+
+    elemento.classList.add("arrastrando");
+
+    elemento.setAttribute(
+        "data-evento-id",
+        evento.id
+    );
+
+    evento.dataTransfer.effectAllowed = "copyMove";
+
+    evento.dataTransfer.setData(
+        "text/plain",
+        JSON.stringify({
+            id: evento.id,
+            origen: origen
+        })
+    );
+}
+
+function terminarArrastre(elemento) {
+
+    elemento.classList.remove("arrastrando");
+
+    setTimeout(() => {
+        arrastreRealizado = false;
+    }, 100);
+}
+
+function permitirSoltar(evento) {
+
+    evento.preventDefault();
+
+    evento.currentTarget.classList.add(
+        "dia-destino"
+    );
+
+    evento.dataTransfer.dropEffect = "move";
+}
+
+function salirZonaSoltar(evento) {
+
+    evento.currentTarget.classList.remove(
+        "dia-destino"
+    );
+}
+
+function soltarEvento(evento, nuevaFecha) {
+
+    evento.preventDefault();
+
+    evento.currentTarget.classList.remove(
+        "dia-destino"
+    );
+
+    if (!eventoArrastrado) {
+        return;
+    }
+
+    const id = eventoArrastrado.id;
+    const origen = eventoArrastrado.origen;
+
+    const listaOrigen = horarios[origen];
+
+    if (!listaOrigen) {
+        eventoArrastrado = null;
+        return;
+    }
+
+    const eventoOriginal =
+        listaOrigen.find(e => e.id === id);
+
+    if (!eventoOriginal) {
+        eventoArrastrado = null;
+        return;
+    }
+
+    // Si se suelta en el mismo día, no hacemos nada
+    if (eventoOriginal.fecha === nuevaFecha) {
+        eventoArrastrado = null;
+        mostrarCalendario();
+        return;
+    }
+
+    const mover = confirm(
+        `¿Qué quieres hacer con "${eventoOriginal.nombre}"?\n\n` +
+        `Aceptar = MOVER\n` +
+        `Cancelar = COPIAR`
+    );
+
+    if (mover) {
+
+        // MOVER
+        eventoOriginal.fecha = nuevaFecha;
+
+    } else {
+
+        // COPIAR
+        const copia = {
+            ...eventoOriginal,
+            id: Date.now(),
+            fecha: nuevaFecha
+        };
+
+        listaOrigen.push(copia);
+    }
+
+    guardarDatos();
+
+    eventoArrastrado = null;
+
+    mostrarCalendario();
 }
 
 /* =========================
@@ -177,6 +308,27 @@ function mostrarSemana() {
         const fechaTexto =
             fechaDia.toISOString().split("T")[0];
 
+        /* DROP */
+
+        columna.addEventListener(
+            "dragover",
+            permitirSoltar
+        );
+
+        columna.addEventListener(
+            "dragleave",
+            salirZonaSoltar
+        );
+
+        columna.addEventListener(
+            "drop",
+            evento =>
+                soltarEvento(
+                    evento,
+                    fechaTexto
+                )
+        );
+
         const nombre =
             document.createElement("div");
 
@@ -225,6 +377,8 @@ function mostrarSemana() {
             elemento.style.background =
                 evento.color;
 
+            elemento.draggable = true;
+
             const creador =
                 evento.horarioOrigen === "A"
                     ? "Bruno"
@@ -253,8 +407,30 @@ function mostrarSemana() {
 
             `;
 
-            elemento.onclick = () =>
+            elemento.addEventListener(
+                "dragstart",
+                e =>
+                    iniciarArrastre(
+                        e,
+                        evento,
+                        elemento
+                    )
+            );
+
+            elemento.addEventListener(
+                "dragend",
+                () =>
+                    terminarArrastre(elemento)
+            );
+
+            elemento.onclick = () => {
+
+                if (arrastreRealizado) {
+                    return;
+                }
+
                 editarEvento(evento);
+            };
 
             eventos.appendChild(elemento);
         });
@@ -382,6 +558,27 @@ function mostrarMes() {
         const fechaTexto =
             `${año}-${mesTexto}-${diaTexto}`;
 
+        /* DROP */
+
+        elemento.addEventListener(
+            "dragover",
+            permitirSoltar
+        );
+
+        elemento.addEventListener(
+            "dragleave",
+            salirZonaSoltar
+        );
+
+        elemento.addEventListener(
+            "drop",
+            evento =>
+                soltarEvento(
+                    evento,
+                    fechaTexto
+                )
+        );
+
         const eventosDia =
             obtenerEventos()
                 .filter(evento =>
@@ -414,6 +611,8 @@ function mostrarMes() {
 
             eventoElemento.style.background =
                 evento.color;
+
+            eventoElemento.draggable = true;
 
             const creador =
                 evento.horarioOrigen === "A"
@@ -449,8 +648,32 @@ function mostrarMes() {
                         }
                       `;
 
-            eventoElemento.onclick = () =>
+            eventoElemento.addEventListener(
+                "dragstart",
+                e =>
+                    iniciarArrastre(
+                        e,
+                        evento,
+                        eventoElemento
+                    )
+            );
+
+            eventoElemento.addEventListener(
+                "dragend",
+                () =>
+                    terminarArrastre(
+                        eventoElemento
+                    )
+            );
+
+            eventoElemento.onclick = () => {
+
+                if (arrastreRealizado) {
+                    return;
+                }
+
                 editarEvento(evento);
+            };
 
             elemento.appendChild(
                 eventoElemento
