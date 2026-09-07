@@ -4,39 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis horarios</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <h1>Mis horarios</h1>
+    <header>
+        <h1>Mis horarios</h1>
 
-    <button>Horario A</button>
-    <button>Horario B</button>
+        <div class="selector">
+            <button id="horarioA" class="active">Horario A</button>
+            <button id="horarioB">Horario B</button>
+        </div>
 
-    <h2>Semana</h2>
+        <div class="vistas">
+            <button id="vistaSemana" class="active">Semana</button>
+            <button id="vistaMes">Mes</button>
+        </div>
+    </header>
 
-    <div>
-        <h3>Lunes</h3>
-        <p>Sin eventos</p>
+    <main>
+        <div class="barra-superior">
+            <button id="mesAnterior">‹</button>
+            <h2 id="tituloCalendario"></h2>
+            <button id="mesSiguiente">›</button>
+        </div>
 
-        <h3>Martes</h3>
-        <p>Sin eventos</p>
+        <button id="añadirEvento" class="boton-añadir">
+            + Añadir evento
+        </button>
 
-        <h3>Miércoles</h3>
-        <p>Sin eventos</p>
+        <div id="calendario"></div>
+    </main>
 
-        <h3>Jueves</h3>
-        <p>Sin eventos</p>
+    <div id="modal" class="modal oculto">
+        <div class="modal-contenido">
+            <h2 id="tituloModal">Añadir evento</h2>
 
-        <h3>Viernes</h3>
-        <p>Sin eventos</p>
+            <label>Nombre</label>
+            <input type="text" id="nombreEvento" placeholder="Ej. Matemáticas">
 
-        <h3>Sábado</h3>
-        <p>Sin eventos</p>
+            <label>Día</label>
+            <select id="diaEvento">
+                <option value="1">Lunes</option>
+                <option value="2">Martes</option>
+                <option value="3">Miércoles</option>
+                <option value="4">Jueves</option>
+                <option value="5">Viernes</option>
+                <option value="6">Sábado</option>
+                <option value="0">Domingo</option>
+            </select>
 
-        <h3>Domingo</h3>
-        <p>Sin eventos</p>
+            <label>Hora de inicio</label>
+            <input type="time" id="horaInicio">
+
+            <label>Hora de finalización</label>
+            <input type="time" id="horaFin">
+
+            <label>Color</label>
+            <input type="color" id="colorEvento" value="#6366f1">
+
+            <div class="acciones-modal">
+                <button id="cancelarEvento">Cancelar</button>
+                <button id="guardarEvento" class="guardar">Guardar</button>
+            </div>
+        </div>
     </div>
+
+    <script src="script.js"></script>
 
 </body>
 </html>
