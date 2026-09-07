@@ -113,7 +113,7 @@ function obtenerEventos() {
    DRAG & DROP
    ========================= */
 
-function iniciarArrastre(evento, elemento) {
+function iniciarArrastre(e, evento, elemento) {
 
     let origen = evento.horarioOrigen || horarioActual;
 
@@ -135,7 +135,14 @@ function iniciarArrastre(evento, elemento) {
         evento.id
     );
 
-    evento.dataTransfer.effectAllowed = "copyMove";
+    e.dataTransfer.effectAllowed = "copyMove";
+e.dataTransfer.setData(
+    "text/plain",
+    JSON.stringify({
+        id: evento.id,
+        origen: evento.horarioOrigen || horarioActual
+    })
+);
 
     evento.dataTransfer.setData(
         "text/plain",
