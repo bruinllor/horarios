@@ -11,6 +11,9 @@ let horarios = {
 const calendario = document.getElementById("calendario");
 const tituloCalendario = document.getElementById("tituloCalendario");
 const modal = document.getElementById("modal");
+const todoElDia = document.getElementById("todoElDia");
+const horaInicio = document.getElementById("horaInicio");
+const horaFin = document.getElementById("horaFin");
 
 const nombresDias = [
     "Domingo",
@@ -134,7 +137,7 @@ function mostrarSemana() {
                 .filter(evento => evento.fecha === fechaTexto);
 
         eventosDia.sort((a, b) =>
-            a.inicio.localeCompare(b.inicio)
+            (a.inicio || "").localeCompare(b.inicio || "")
         );
 
         eventosDia.forEach(evento => {
@@ -149,6 +152,11 @@ function mostrarSemana() {
                     ? "Bruno"
                     : "Mauro";
 
+            const horario =
+                evento.todoElDia
+                    ? "Todo el día"
+                    : `${evento.inicio} - ${evento.fin}`;
+
             elemento.innerHTML = `
                 <strong>${evento.nombre}</strong>
 
@@ -158,7 +166,7 @@ function mostrarSemana() {
                         : ""
                 }
 
-                <span>${evento.inicio} - ${evento.fin}</span>
+                <span>${horario}</span>
             `;
 
             elemento.onclick = () =>
@@ -259,7 +267,7 @@ function mostrarMes() {
                 );
 
         eventosDia.sort((a, b) =>
-            a.inicio.localeCompare(b.inicio)
+            (a.inicio || "").localeCompare(b.inicio || "")
         );
 
         eventosDia.forEach(evento => {
@@ -278,15 +286,31 @@ function mostrarMes() {
                     ? "Bruno"
                     : "Mauro";
 
-            eventoElemento.innerHTML = `
-                ${evento.inicio} ${evento.nombre}
+            const horario =
+                evento.todoElDia
+                    ? "Todo el día"
+                    : `${evento.inicio} ${evento.nombre}`;
 
-                ${
-                    horarioActual === "AMBOS"
-                        ? `<small> (${creador})</small>`
-                        : ""
-                }
-            `;
+            eventoElemento.innerHTML = evento.todoElDia
+                ? `
+                    ${evento.nombre}
+                    <small>
+                        Todo el día
+                        ${
+                            horarioActual === "AMBOS"
+                                ? `(${creador})`
+                                : ""
+                        }
+                    </small>
+                  `
+                : `
+                    ${evento.inicio} ${evento.nombre}
+                    ${
+                        horarioActual === "AMBOS"
+                            ? `<small>(${creador})</small>`
+                            : ""
+                    }
+                  `;
 
             eventoElemento.onclick = () =>
                 editarEvento(evento);
@@ -299,6 +323,25 @@ function mostrarMes() {
 
     calendario.appendChild(contenedor);
 }
+
+function actualizarHoras() {
+
+    if (todoElDia.checked) {
+
+        horaInicio.disabled = true;
+        horaFin.disabled = true;
+
+        horaInicio.value = "";
+        horaFin.value = "";
+
+    } else {
+
+        horaInicio.disabled = false;
+        horaFin.disabled = false;
+    }
+}
+
+todoElDia.addEventListener("change", actualizarHoras);
 
 function abrirModal() {
 
@@ -314,8 +357,11 @@ function abrirModal() {
 
     document.getElementById("nombreEvento").value = "";
     document.getElementById("fechaEvento").value = "";
-    document.getElementById("horaInicio").value = "";
-    document.getElementById("horaFin").value = "";
+    horaInicio.value = "";
+    horaFin.value = "";
+
+    todoElDia.checked = false;
+    actualizarHoras();
 
     document.getElementById("colorEvento").value =
         "#6366f1";
@@ -346,11 +392,16 @@ function editarEvento(evento) {
     document.getElementById("fechaEvento").value =
         evento.fecha || "";
 
-    document.getElementById("horaInicio").value =
-        evento.inicio;
+    horaInicio.value =
+        evento.inicio || "";
 
-    document.getElementById("horaFin").value =
-        evento.fin;
+    horaFin.value =
+        evento.fin || "";
+
+    todoElDia.checked =
+        evento.todoElDia === true;
+
+    actualizarHoras();
 
     document.getElementById("colorEvento").value =
         evento.color;
@@ -372,25 +423,33 @@ function guardarEvento() {
             .value;
 
     const inicio =
-        document.getElementById("horaInicio")
-            .value;
+        horaInicio.value;
 
     const fin =
-        document.getElementById("horaFin")
-            .value;
+        horaFin.value;
 
     const color =
         document.getElementById("colorEvento")
             .value;
 
-    if (!nombre || !fecha || !inicio || !fin) {
+    const esTodoElDia =
+        todoElDia.checked;
 
-        alert("Completa todos los campos.");
+    if (!nombre || !fecha) {
+
+        alert("Completa el nombre y la fecha.");
 
         return;
     }
 
-    if (inicio >= fin) {
+    if (!esTodoElDia && (!inicio || !fin)) {
+
+        alert("Introduce las horas o marca 'Todo el día'.");
+
+        return;
+    }
+
+    if (!esTodoElDia && inicio >= fin) {
 
         alert(
             "La hora de finalización debe ser posterior."
@@ -403,9 +462,10 @@ function guardarEvento() {
 
         eventoEditando.nombre = nombre;
         eventoEditando.fecha = fecha;
-        eventoEditando.inicio = inicio;
-        eventoEditando.fin = fin;
+        eventoEditando.inicio = esTodoElDia ? "" : inicio;
+        eventoEditando.fin = esTodoElDia ? "" : fin;
         eventoEditando.color = color;
+        eventoEditando.todoElDia = esTodoElDia;
 
     } else {
 
@@ -417,12 +477,13 @@ function guardarEvento() {
 
             fecha: fecha,
 
-            inicio: inicio,
+            inicio: esTodoElDia ? "" : inicio,
 
-            fin: fin,
+            fin: esTodoElDia ? "" : fin,
 
-            color: color
+            color: color,
 
+            todoElDia: esTodoElDia
         });
     }
 
