@@ -62,6 +62,26 @@ function cargarDatos() {
     }
 }
 
+function obtenerEventos() {
+
+    if (horarioActual === "AMBOS") {
+
+        return [
+            ...horarios.A.map(evento => ({
+                ...evento,
+                horarioOrigen: "A"
+            })),
+            ...horarios.B.map(evento => ({
+                ...evento,
+                horarioOrigen: "B"
+            }))
+        ];
+
+    }
+
+    return horarios[horarioActual];
+}
+
 function mostrarCalendario() {
     if (vistaActual === "semana") {
         mostrarSemana();
@@ -110,7 +130,7 @@ function mostrarSemana() {
         eventos.className = "eventos";
 
         const eventosDia =
-            horarios[horarioActual]
+            obtenerEventos()
                 .filter(evento => evento.fecha === fechaTexto);
 
         eventosDia.sort((a, b) =>
@@ -221,7 +241,7 @@ function mostrarMes() {
             `${año}-${mesTexto}-${diaTexto}`;
 
         const eventosDia =
-            horarios[horarioActual]
+            obtenerEventos()
                 .filter(evento =>
                     evento.fecha === fechaTexto
                 );
@@ -258,17 +278,19 @@ function mostrarMes() {
 
 function abrirModal() {
 
+    if (horarioActual === "AMBOS") {
+        alert("Selecciona Bruno o Mauro para añadir un evento.");
+        return;
+    }
+
     eventoEditando = null;
 
     document.getElementById("tituloModal").textContent =
         "Añadir evento";
 
     document.getElementById("nombreEvento").value = "";
-
     document.getElementById("fechaEvento").value = "";
-
     document.getElementById("horaInicio").value = "";
-
     document.getElementById("horaFin").value = "";
 
     document.getElementById("colorEvento").value =
@@ -402,8 +424,14 @@ function eliminarEvento() {
         return;
     }
 
+    let horarioEliminar = horarioActual;
+
+    if (eventoEditando.horarioOrigen) {
+        horarioEliminar = eventoEditando.horarioOrigen;
+    }
+
     const eventos =
-        horarios[horarioActual];
+        horarios[horarioEliminar];
 
     const indice =
         eventos.indexOf(eventoEditando);
@@ -414,7 +442,7 @@ function eliminarEvento() {
 
     } else {
 
-        horarios[horarioActual] =
+        horarios[horarioEliminar] =
             eventos.filter(evento =>
                 evento.id !== eventoEditando.id
             );
@@ -437,6 +465,9 @@ document.getElementById("horarioA").onclick = () => {
     document.getElementById("horarioB")
         .classList.remove("active");
 
+    document.getElementById("horarioAmbos")
+        .classList.remove("active");
+
     mostrarCalendario();
 };
 
@@ -448,6 +479,25 @@ document.getElementById("horarioB").onclick = () => {
         .classList.add("active");
 
     document.getElementById("horarioA")
+        .classList.remove("active");
+
+    document.getElementById("horarioAmbos")
+        .classList.remove("active");
+
+    mostrarCalendario();
+};
+
+document.getElementById("horarioAmbos").onclick = () => {
+
+    horarioActual = "AMBOS";
+
+    document.getElementById("horarioAmbos")
+        .classList.add("active");
+
+    document.getElementById("horarioA")
+        .classList.remove("active");
+
+    document.getElementById("horarioB")
         .classList.remove("active");
 
     mostrarCalendario();
