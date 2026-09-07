@@ -95,7 +95,7 @@ main {
     background: var(--bg-panel);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
 .calendario-semana {
@@ -130,8 +130,12 @@ main {
     border-radius: 8px;
     padding: 10px;
     margin-bottom: 8px;
-    cursor: pointer;
+    cursor: grab;
     font-size: 14px;
+}
+
+.evento:active {
+    cursor: grabbing;
 }
 
 .evento strong {
@@ -173,23 +177,48 @@ main {
     padding: 4px 6px;
     margin-bottom: 3px;
     font-size: 12px;
-    cursor: pointer;
+    cursor: grab;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
+.evento-mes:active {
+    cursor: grabbing;
+}
+
+
+/* =========================
+   ZONA DE ARRASTRE
+   ========================= */
+
+.dia-destino {
+    background: rgba(99, 102, 241, 0.12);
+    outline: 2px dashed var(--acento);
+    outline-offset: -2px;
+}
+
+.arrastrando {
+    opacity: 0.5;
+}
+
+
+/* =========================
+   MODAL AÑADIR / EDITAR
+   ========================= */
+
 .modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 16px;
+    z-index: 9000;
 }
 
-.oculto {
+.modal.oculto {
     display: none;
 }
 
@@ -232,7 +261,11 @@ main {
     color-scheme: dark;
 }
 
-/* Checkbox "Todo el día" */
+
+/* =========================
+   CHECKBOX TODO EL DÍA
+   ========================= */
+
 .checkbox-todo-dia {
     display: flex;
     align-items: center;
@@ -267,6 +300,11 @@ main {
     color: var(--texto-suave);
 }
 
+
+/* =========================
+   BOTONES MODAL AÑADIR
+   ========================= */
+
 .acciones-modal {
     display: flex;
     justify-content: flex-end;
@@ -285,16 +323,148 @@ main {
     color: white;
 }
 
-/* ---- Tablet / móvil grande ---- */
-@media (max-width: 900px) {
-    .calendario-semana {
-        overflow-x: auto;
-        grid-template-columns: repeat(7, minmax(150px, 1fr));
-    }
+
+/* =========================
+   INSTRUCCIÓN DE ARRASTRE
+   ========================= */
+
+.instruccion-arrastre {
+    text-align: center;
+    margin: 0 0 10px;
+    color: var(--texto-suave);
+    font-size: 13px;
 }
 
-/* ---- Móvil ---- */
+
+/* =========================
+   MODAL COPIAR / MOVER
+   ========================= */
+
+.modal-arrastre {
+    position: fixed !important;
+
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+
+    width: 100vw !important;
+    height: 100vh !important;
+
+    margin: 0 !important;
+    padding: 20px !important;
+
+    background: rgba(0, 0, 0, 0.65);
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    z-index: 99999 !important;
+
+    backdrop-filter: blur(4px);
+}
+
+.modal-arrastre.oculto {
+    display: none !important;
+}
+
+.caja-arrastre {
+    position: relative;
+
+    width: 100%;
+    max-width: 380px;
+
+    margin: 0 !important;
+    padding: 24px;
+
+    background: var(--bg-panel);
+
+    border: 1px solid var(--borde);
+    border-radius: 16px;
+
+    text-align: center;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.6);
+
+    z-index: 100000;
+}
+
+.caja-arrastre h3 {
+    margin: 0 0 8px;
+    font-size: 19px;
+    color: var(--texto);
+}
+
+.caja-arrastre p {
+    margin: 0 0 22px;
+    color: var(--texto-suave);
+    font-size: 14px;
+}
+
+.botones-arrastre {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.botones-arrastre button {
+    flex: 1;
+
+    padding: 11px 14px;
+
+    border: none;
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.boton-mover {
+    background: var(--acento);
+    color: white;
+}
+
+.boton-copiar {
+    background: var(--bg-panel-alt);
+    color: white;
+}
+
+.boton-cancelar-arrastre {
+    background: transparent;
+    color: var(--texto-suave);
+    border: 1px solid var(--borde) !important;
+}
+
+.botones-arrastre button:hover {
+    filter: brightness(1.15);
+}
+
+
+/* =========================
+   TABLET
+   ========================= */
+
+@media (max-width: 900px) {
+
+    .calendario-semana {
+        overflow-x: auto;
+        grid-template-columns:
+            repeat(7, minmax(150px, 1fr));
+    }
+
+}
+
+
+/* =========================
+   MÓVIL
+   ========================= */
+
 @media (max-width: 600px) {
+
     h1 {
         font-size: 18px;
     }
@@ -358,182 +528,18 @@ main {
     .acciones-modal button {
         flex: 1;
     }
-    /* =========================
-   INSTRUCCIÓN DE ARRASTRE
-   ========================= */
 
-.instruccion-arrastre {
-    text-align: center;
-    margin: 0 0 10px;
-    color: var(--texto-suave);
-    font-size: 13px;
 }
+
 
 /* =========================
-   MODAL DE COPIAR / MOVER
+   MÓVIL PEQUEÑO
    ========================= */
 
-.modal-arrastre {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.65);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 1000;
-    backdrop-filter: blur(4px);
-}
-
-.modal-arrastre.oculto {
-    display: none;
-}
-
-.caja-arrastre {
-    width: 100%;
-    max-width: 360px;
-    background: var(--bg-panel);
-    border: 1px solid var(--borde);
-    border-radius: 16px;
-    padding: 24px;
-    text-align: center;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-    animation: aparecerArrastre 0.15s ease-out;
-}
-
-.caja-arrastre h3 {
-    margin: 0 0 8px;
-    font-size: 19px;
-}
-
-.caja-arrastre p {
-    margin: 0 0 22px;
-    color: var(--texto-suave);
-    font-size: 14px;
-}
-
-.botones-arrastre {
-    display: flex;
-    gap: 10px;
-}
-
-.botones-arrastre button {
-    flex: 1;
-    padding: 11px 14px;
-    font-weight: bold;
-}
-
-.boton-mover {
-    background: var(--acento);
-    color: white;
-}
-
-.boton-copiar {
-    background: var(--bg-panel-alt);
-    color: white;
-}
-
-.boton-cancelar-arrastre {
-    background: transparent;
-    color: var(--texto-suave);
-    border: 1px solid var(--borde);
-}
-
-@keyframes aparecerArrastre {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-    .instruccion-arrastre {
-    text-align: center;
-    margin: 0 0 10px;
-    color: var(--texto-suave);
-    font-size: 13px;
-}
-
-.modal-arrastre {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.65);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 9999;
-    backdrop-filter: blur(4px);
-}
-
-.modal-arrastre.oculto {
-    display: none;
-}
-
-.caja-arrastre {
-    width: 100%;
-    max-width: 380px;
-    background: var(--bg-panel);
-    border: 1px solid var(--borde);
-    border-radius: 16px;
-    padding: 24px;
-    text-align: center;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-}
-
-.caja-arrastre h3 {
-    margin: 0 0 8px;
-    font-size: 19px;
-}
-
-.caja-arrastre p {
-    margin: 0 0 22px;
-    color: var(--texto-suave);
-    font-size: 14px;
-}
-
-.botones-arrastre {
-    display: flex;
-    gap: 10px;
-}
-
-.botones-arrastre button {
-    flex: 1;
-    padding: 11px 14px;
-    font-weight: bold;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-}
-
-.boton-mover {
-    background: var(--acento);
-    color: white;
-}
-
-.boton-copiar {
-    background: var(--bg-panel-alt);
-    color: white;
-}
-
-.boton-cancelar-arrastre {
-    background: transparent;
-    color: var(--texto-suave);
-    border: 1px solid var(--borde) !important;
-}
-
-.botones-arrastre button:hover {
-    filter: brightness(1.15);
-}
-
 @media (max-width: 500px) {
+
     .botones-arrastre {
         flex-direction: column;
     }
-}
+
 }
