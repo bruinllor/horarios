@@ -45,7 +45,34 @@ function cargarDatos() {
     const datos = localStorage.getItem("horarios");
 
     if (datos) {
-        horarios = JSON.parse(datos);
+        try {
+            horarios = JSON.parse(datos);
+
+            if (!horarios.A) horarios.A = [];
+            if (!horarios.B) horarios.B = [];
+
+            horarios.A.forEach((evento, indice) => {
+                if (!evento.id) {
+                    evento.id = Date.now() + indice;
+                }
+            });
+
+            horarios.B.forEach((evento, indice) => {
+                if (!evento.id) {
+                    evento.id = Date.now() + indice + 1000;
+                }
+            });
+
+            guardarDatos();
+
+        } catch (error) {
+            console.error("Error al cargar los horarios:", error);
+
+            horarios = {
+                A: [],
+                B: []
+            };
+        }
     }
 }
 
@@ -85,6 +112,7 @@ function mostrarSemana() {
 
         eventosDia.forEach(evento => {
             const elemento = document.createElement("div");
+
             elemento.className = "evento";
             elemento.style.background = evento.color;
 
@@ -100,6 +128,7 @@ function mostrarSemana() {
 
         columna.appendChild(nombre);
         columna.appendChild(eventos);
+
         contenedor.appendChild(columna);
     }
 
@@ -130,8 +159,10 @@ function mostrarMes() {
 
     diasSemana.forEach(dia => {
         const elemento = document.createElement("div");
+
         elemento.className = "cabecera-mes";
         elemento.textContent = dia;
+
         contenedor.appendChild(elemento);
     });
 
@@ -141,39 +172,54 @@ function mostrarMes() {
         primerDia = 7;
     }
 
-    const diasMes = new Date(año, mes + 1, 0).getDate();
+    const diasMes =
+        new Date(año, mes + 1, 0).getDate();
 
     for (let i = 1; i < primerDia; i++) {
         const vacio = document.createElement("div");
+
         vacio.className = "dia-mes";
+
         contenedor.appendChild(vacio);
     }
 
     for (let dia = 1; dia <= diasMes; dia++) {
         const elemento = document.createElement("div");
+
         elemento.className = "dia-mes";
 
         const numero = document.createElement("div");
+
         numero.className = "numero-dia";
         numero.textContent = dia;
 
         elemento.appendChild(numero);
 
-        const fecha = new Date(año, mes, dia);
-        const diaSemana = fecha.getDay();
+        const fecha =
+            new Date(año, mes, dia);
 
-        const eventosDia = horarios[horarioActual]
-            .filter(evento => Number(evento.dia) === diaSemana);
+        const diaSemana =
+            fecha.getDay();
+
+        const eventosDia =
+            horarios[horarioActual]
+                .filter(evento =>
+                    Number(evento.dia) === diaSemana
+                );
 
         eventosDia.sort((a, b) =>
             a.inicio.localeCompare(b.inicio)
         );
 
         eventosDia.forEach(evento => {
-            const eventoElemento = document.createElement("div");
+            const eventoElemento =
+                document.createElement("div");
 
-            eventoElemento.className = "evento-mes";
-            eventoElemento.style.background = evento.color;
+            eventoElemento.className =
+                "evento-mes";
+
+            eventoElemento.style.background =
+                evento.color;
 
             eventoElemento.textContent =
                 `${evento.inicio} ${evento.nombre}`;
@@ -262,52 +308,81 @@ function guardarEvento() {
     }
 
     if (inicio >= fin) {
-        alert("La hora de finalización debe ser posterior.");
+        alert(
+            "La hora de finalización debe ser posterior."
+        );
         return;
     }
 
     if (eventoEditando) {
+
         eventoEditando.nombre = nombre;
         eventoEditando.dia = dia;
         eventoEditando.inicio = inicio;
         eventoEditando.fin = fin;
         eventoEditando.color = color;
+
     } else {
+
         horarios[horarioActual].push({
             id: Date.now(),
-            nombre,
-            dia,
-            inicio,
-            fin,
-            color
+            nombre: nombre,
+            dia: dia,
+            inicio: inicio,
+            fin: fin,
+            color: color
         });
     }
 
     guardarDatos();
+
     cerrarModal();
+
     mostrarCalendario();
 }
 
 function eliminarEvento() {
-    if (!eventoEditando) return;
+    if (!eventoEditando) {
+        return;
+    }
 
-    const confirmar = confirm(
-        `¿Quieres eliminar "${eventoEditando.nombre}"?`
-    );
+    const nombreEvento =
+        eventoEditando.nombre;
 
-    if (!confirmar) return;
-
-    horarios[horarioActual] =
-        horarios[horarioActual].filter(
-            evento => evento.id !== eventoEditando.id
+    const confirmar =
+        confirm(
+            `¿Quieres eliminar "${nombreEvento}"?`
         );
 
+    if (!confirmar) {
+        return;
+    }
+
+    const eventos =
+        horarios[horarioActual];
+
+    const indice =
+        eventos.indexOf(eventoEditando);
+
+    if (indice !== -1) {
+        eventos.splice(indice, 1);
+    } else {
+
+        horarios[horarioActual] =
+            eventos.filter(evento =>
+                evento.id !== eventoEditando.id
+            );
+    }
+
     guardarDatos();
+
     cerrarModal();
+
     mostrarCalendario();
 }
 
 document.getElementById("horarioA").onclick = () => {
+
     horarioActual = "A";
 
     document.getElementById("horarioA")
@@ -320,6 +395,7 @@ document.getElementById("horarioA").onclick = () => {
 };
 
 document.getElementById("horarioB").onclick = () => {
+
     horarioActual = "B";
 
     document.getElementById("horarioB")
@@ -332,6 +408,7 @@ document.getElementById("horarioB").onclick = () => {
 };
 
 document.getElementById("vistaSemana").onclick = () => {
+
     vistaActual = "semana";
 
     document.getElementById("vistaSemana")
@@ -344,6 +421,7 @@ document.getElementById("vistaSemana").onclick = () => {
 };
 
 document.getElementById("vistaMes").onclick = () => {
+
     vistaActual = "mes";
 
     document.getElementById("vistaMes")
@@ -368,12 +446,20 @@ document.getElementById("botonEliminar").onclick =
     eliminarEvento;
 
 document.getElementById("mesAnterior").onclick = () => {
-    fechaActual.setMonth(fechaActual.getMonth() - 1);
+
+    fechaActual.setMonth(
+        fechaActual.getMonth() - 1
+    );
+
     mostrarCalendario();
 };
 
 document.getElementById("mesSiguiente").onclick = () => {
-    fechaActual.setMonth(fechaActual.getMonth() + 1);
+
+    fechaActual.setMonth(
+        fechaActual.getMonth() + 1
+    );
+
     mostrarCalendario();
 };
 
