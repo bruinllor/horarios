@@ -236,9 +236,21 @@ main {
 .checkbox-todo-dia {
     display: flex;
     align-items: center;
-    gap: 5px;
     margin-top: 15px;
     margin-bottom: 5px;
+}
+
+.checkbox-todo-dia input[type="checkbox"] {
+    width: 16px !important;
+    height: 16px;
+    margin: 0 6px 0 0 !important;
+    padding: 0 !important;
+}
+
+.checkbox-todo-dia label {
+    display: inline !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .modal-contenido .checkbox-todo-dia input[type="checkbox"] {
