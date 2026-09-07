@@ -358,4 +358,96 @@ main {
     .acciones-modal button {
         flex: 1;
     }
+    /* =========================
+   INSTRUCCIÓN DE ARRASTRE
+   ========================= */
+
+.instruccion-arrastre {
+    text-align: center;
+    margin: 0 0 10px;
+    color: var(--texto-suave);
+    font-size: 13px;
+}
+
+/* =========================
+   MODAL DE COPIAR / MOVER
+   ========================= */
+
+.modal-arrastre {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-arrastre.oculto {
+    display: none;
+}
+
+.caja-arrastre {
+    width: 100%;
+    max-width: 360px;
+    background: var(--bg-panel);
+    border: 1px solid var(--borde);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    animation: aparecerArrastre 0.15s ease-out;
+}
+
+.caja-arrastre h3 {
+    margin: 0 0 8px;
+    font-size: 19px;
+}
+
+.caja-arrastre p {
+    margin: 0 0 22px;
+    color: var(--texto-suave);
+    font-size: 14px;
+}
+
+.botones-arrastre {
+    display: flex;
+    gap: 10px;
+}
+
+.botones-arrastre button {
+    flex: 1;
+    padding: 11px 14px;
+    font-weight: bold;
+}
+
+.boton-mover {
+    background: var(--acento);
+    color: white;
+}
+
+.boton-copiar {
+    background: var(--bg-panel-alt);
+    color: white;
+}
+
+.boton-cancelar-arrastre {
+    background: transparent;
+    color: var(--texto-suave);
+    border: 1px solid var(--borde);
+}
+
+@keyframes aparecerArrastre {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
 }
