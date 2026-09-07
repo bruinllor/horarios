@@ -232,6 +232,29 @@ main {
     color-scheme: dark;
 }
 
+/* Checkbox "Todo el día" */
+.checkbox-todo-dia {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.modal-contenido .checkbox-todo-dia input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.modal-contenido .checkbox-todo-dia label {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    color: var(--texto-suave);
+}
+
 .acciones-modal {
     display: flex;
     justify-content: flex-end;
@@ -323,19 +346,4 @@ main {
     .acciones-modal button {
         flex: 1;
     }
-    .checkbox-todo-dia {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 10px 0;
-}
-
-.checkbox-todo-dia input {
-    width: auto;
-    margin: 0;
-}
-
-.checkbox-todo-dia label {
-    margin: 0;
-}
 }
